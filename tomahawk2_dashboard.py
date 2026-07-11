@@ -15,6 +15,7 @@ try:
     from tomahawk2_vision import tool_vehicle_analyze, tool_vision_analyze, tool_alpr_detect
     from tomahawk2_monitor import ContinuousMonitor
     from tomahawk2_ring import tool_ring_list_cameras
+    from tomahawk2_control import tool_block_ip, tool_prevent_attack, tool_audit_log
     MODULES_AVAILABLE = True
 except ImportError as e:
     MODULES_AVAILABLE = False
@@ -52,6 +53,7 @@ def main():
             "👁️ Vision Analysis",
             "📹 Ring Cameras",
             "📡 Network Monitor",
+            "🛡️ Active Control",
             "☁️ Cloud Storage"
         ])
         
@@ -71,6 +73,8 @@ def main():
         ring_page()
     elif page == "📡 Network Monitor":
         network_page()
+    elif page == "🛡️ Active Control":
+        control_page()
     elif page == "☁️ Cloud Storage":
         cloud_page()
 
@@ -192,6 +196,47 @@ def network_page():
         with st.spinner("Analyzing entry points..."):
             result = tool_check_entry_points()
             st.json(result)
+
+
+def control_page():
+    st.header("🛡️ Active Security Control")
+    
+    st.warning("⚠️ Requires administrator privileges for firewall control")
+    
+    # IP Blocking
+    st.subheader("IP Blocking")
+    col1, col2 = st.columns([3, 1])
+    
+    with col1:
+        ip_to_block = st.text_input("IP Address to Block", placeholder="192.168.1.100")
+    
+    with col2:
+        st.markdown("<br>", unsafe_allow_html=True)
+        if st.button("🚫 Block IP"):
+            if ip_to_block:
+                with st.spinner("Blocking IP..."):
+                    result = tool_block_ip(ip_to_block)
+                    st.json(result)
+    
+    st.markdown("---")
+    
+    # Attack Prevention
+    st.subheader("Attack Prevention")
+    threat_type = st.selectbox("Threat Type", ["bruteforce", "suspicious_ip", "malware"])
+    source_ip = st.text_input("Source IP", placeholder="192.168.1.100")
+    
+    if st.button("🛡️ Prevent Attack"):
+        if source_ip:
+            with st.spinner("Taking preventive action..."):
+                result = tool_prevent_attack(threat_type, source_ip)
+                st.json(result)
+    
+    st.markdown("---")
+    
+    # Audit Log
+    st.subheader("Audit Log")
+    if st.button("📋 View Audit Log"):
+        st.info("Audit log entries saved to audit_default.jsonl")
 
 
 def cloud_page():

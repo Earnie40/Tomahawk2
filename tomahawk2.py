@@ -20,6 +20,7 @@ from tomahawk2_agent import Tomahawk2Agent, tool_scan_malware, tool_check_entry_
 from tomahawk2_vision import tool_vehicle_analyze, tool_vision_analyze, tool_alpr_detect
 from tomahawk2_monitor import tool_start_monitor, tool_stop_monitor
 from tomahawk2_ring import tool_ring_auth, tool_ring_list_cameras, tool_ring_events
+from tomahawk2_control import tool_block_ip, tool_unblock_ip, tool_prevent_attack, tool_audit_log
 
 
 def main():
@@ -57,8 +58,20 @@ Examples:
     alpr_parser.add_argument("image", help="Image file to analyze")
     alpr_parser.add_argument("--location", default="", help="Location")
     
-    # Ring command
+# Ring command
     ring_parser = subparsers.add_parser("ring", help="Ring camera integration")
+    
+    # Control commands
+    control_parser = subparsers.add_parser("block", help="Block IP address")
+    control_parser.add_argument("ip", help="IP address to block")
+    control_parser.add_argument("--port", type=int, default=0, help="Port to block")
+    
+    unblock_parser = subparsers.add_parser("unblock", help="Unblock IP address")
+    unblock_parser.add_argument("ip", help="IP address to unblock")
+    
+    prevent_parser = subparsers.add_parser("prevent", help="Prevent attack")
+    prevent_parser.add_argument("threat_type", help="Threat type")
+    prevent_parser.add_argument("source", help="Source IP")
     
     args = parser.parse_args()
     
@@ -100,6 +113,21 @@ Examples:
     elif args.command == "ring":
         print("📹 Ring camera status...")
         result = tool_ring_list_cameras()
+        print(json.dumps(result, indent=2))
+    
+    elif args.command == "block":
+        print(f"🚫 Blocking IP: {args.ip}")
+        result = tool_block_ip(args.ip, args.port)
+        print(json.dumps(result, indent=2))
+    
+    elif args.command == "unblock":
+        print(f"✅ Unblocking IP: {args.ip}")
+        result = tool_unblock_ip(args.ip)
+        print(json.dumps(result, indent=2))
+    
+    elif args.command == "prevent":
+        print(f"🛡️ Preventing {args.threat_type} from {args.source}")
+        result = tool_prevent_attack(args.threat_type, args.source)
         print(json.dumps(result, indent=2))
     
     else:
