@@ -15,9 +15,9 @@ import os
 from typing import Dict, List, Optional
 from pathlib import Path
 
-# Ring API integration (requires ring-client-api or similar)
+# Ring API integration (requires ring-doorbell)
 try:
-    from ring_doorbell import RingDoorBell
+    from ring_doorbell import Ring
     RING_AVAILABLE = True
 except ImportError:
     RING_AVAILABLE = False
@@ -47,17 +47,30 @@ class RingIntegration:
         """Authenticate with Ring API."""
         if not RING_AVAILABLE:
             return {
-                "error": "ring-client-api not installed",
-                "install": "pip install ring-client-api"
+                "error": "ring-doorbell not installed",
+                "install": "pip install ring-doorbell"
             }
         
-        # This would use the actual Ring API
-        # For now, return setup instructions
-        return {
-            "status": "ready",
-            "auth_method": "email/password" if self.email else "token",
-            "note": "Install ring-client-api and provide credentials"
-        }
+        if not self.email or not self.password:
+            return {
+                "error": "No credentials provided",
+                "note": "Set RING_EMAIL and RING_PASSWORD in .env file"
+            }
+        
+        try:
+            from ring_doorbell import Auth
+            auth = Auth(self.email, self.password)
+            return {
+                "status": "authenticated",
+                "auth_method": "email/password",
+                "note": "Ring authentication successful"
+            }
+        except Exception as e:
+            return {
+                "status": "auth_failed",
+                "error": str(e),
+                "note": "Check your Ring credentials"
+            }
     
     def list_cameras(self) -> Dict:
         """List all Ring cameras."""
