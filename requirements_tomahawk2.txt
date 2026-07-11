@@ -2,6 +2,8 @@
 # Core dependencies
 requests>=2.31.0
 pillow>=10.0.0
+python-dotenv>=1.0.0
+streamlit>=1.30.0
 
 # Computer Vision (optional - for full vision features)
 opencv-python>=4.8.0
