@@ -11,6 +11,7 @@ This module provides integration with Ring security cameras for:
 from __future__ import annotations
 
 import json
+import os
 from typing import Dict, List, Optional
 from pathlib import Path
 
@@ -22,10 +23,14 @@ except ImportError:
     RING_AVAILABLE = False
 
 
+# Load environment variables
+from dotenv import load_dotenv
+load_dotenv()
+
 class RingIntegration:
     """Ring security camera integration for Tomahawk2."""
     
-    def __init__(self, email: str = "", password: str = "", token: str = ""):
+    def __init__(self, email: str = None, password: str = None, token: str = None):
         """
         Initialize Ring integration.
         
@@ -33,9 +38,9 @@ class RingIntegration:
         1. Ring account email and password, OR
         2. Existing refresh token
         """
-        self.email = email
-        self.password = password
-        self.token = token
+        self.email = email or os.environ.get("RING_EMAIL", "")
+        self.password = password or os.environ.get("RING_PASSWORD", "")
+        self.token = token or os.environ.get("RING_TOKEN", "")
         self.cameras: List[Dict] = []
     
     def authenticate(self) -> Dict:
