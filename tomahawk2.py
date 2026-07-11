@@ -21,6 +21,7 @@ from tomahawk2_vision import tool_vehicle_analyze, tool_vision_analyze, tool_alp
 from tomahawk2_monitor import tool_start_monitor, tool_stop_monitor
 from tomahawk2_ring import tool_ring_auth, tool_ring_list_cameras, tool_ring_events
 from tomahawk2_control import tool_block_ip, tool_unblock_ip, tool_prevent_attack, tool_audit_log
+from tomahawk2_ai_monitor import tool_ai_monitor_start, tool_ai_monitor_stop, tool_ai_analyze_image
 
 
 def main():
@@ -60,6 +61,11 @@ Examples:
     
 # Ring command
     ring_parser = subparsers.add_parser("ring", help="Ring camera integration")
+    
+    # AI Monitor commands
+    ai_parser = subparsers.add_parser("ai", help="AI security monitoring")
+    ai_parser.add_argument("action", choices=["start", "stop"], help="Start or stop AI monitor")
+    ai_parser.add_argument("--interval", type=int, default=30, help="Check interval")
     
     # Control commands
     control_parser = subparsers.add_parser("block", help="Block IP address")
@@ -125,10 +131,15 @@ Examples:
         result = tool_unblock_ip(args.ip)
         print(json.dumps(result, indent=2))
     
-    elif args.command == "prevent":
-        print(f"🛡️ Preventing {args.threat_type} from {args.source}")
-        result = tool_prevent_attack(args.threat_type, args.source)
-        print(json.dumps(result, indent=2))
+    elif args.command == "ai":
+        if args.action == "start":
+            print(f"🤖 Starting AI security monitor (interval: {args.interval}s)...")
+            result = tool_ai_monitor_start(interval=args.interval)
+            print(json.dumps(result, indent=2))
+        else:
+            print("🛑 Stopping AI security monitor...")
+            result = tool_ai_monitor_stop()
+            print(json.dumps(result, indent=2))
     
     else:
         parser.print_help()
