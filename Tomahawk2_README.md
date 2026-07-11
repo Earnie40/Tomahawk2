@@ -85,10 +85,35 @@ python cyber/agent.py --case security_scan chat
 # Open the notebook and run all cells
 ```
 
+## AI Security Monitor
+
+Real-time AI-powered security monitoring with:
+- Person/vehicle detection using YOLO
+- License plate recognition (ALPR)
+- Facial recognition
+- Email/SMS notifications for threats
+- Continuous background monitoring
+
+```bash
+# Start AI monitoring
+python tomahawk2.py ai start --interval 30
+
+# Stop AI monitoring
+python tomahawk2.py ai stop
+
+# Analyze an image
+python tomahawk2.py vision /path/to/image.jpg
+```
+
 ## File Structure
 
+- `tomahawk2.py` - Main CLI entry point
 - `tomahawk2_agent.py` - Main agent with threat detection and monitoring tools
 - `tomahawk2_vision.py` - AI vision system for ALPR and vehicle analysis
+- `tomahawk2_ai_monitor.py` - AI security monitoring with real-time threat detection
+- `tomahawk2_ai_dashboard.py` - Streamlit web interface for AI monitoring
+- `tomahawk2_dashboard.py` - Main Streamlit dashboard
+- `tomahawk2_ring.py` - Ring camera integration
 - `qwen2.5-coder-32b-colab.ipynb` - Colab notebook for 32b model
 - `requirements_tomahawk2.txt` - Python dependencies
 - `cyber/` - Existing forensic investigation tools
